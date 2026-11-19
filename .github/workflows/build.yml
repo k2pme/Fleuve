@@ -21,15 +21,22 @@ jobs:
             os: macos-latest
             rust-targets: aarch64-apple-darwin,x86_64-apple-darwin
             args: --target universal-apple-darwin
+            # Les machines Mac de GitHub sont parfois saturées (le job n'obtient
+            # pas de machine) : hors release, ça ne fait pas échouer le build.
+            optional: true
           - name: Linux
             os: ubuntu-22.04
             rust-targets: ""
             args: ""
+            optional: false
           - name: Windows
             os: windows-latest
             rust-targets: ""
             args: ""
+            optional: false
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    continue-on-error: ${{ matrix.optional && github.ref_type != 'tag' }}
     steps:
       - uses: actions/checkout@v4
 
